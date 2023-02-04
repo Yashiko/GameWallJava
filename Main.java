@@ -1,99 +1,162 @@
-package Canvas;
+package apps;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.*;
 
 
-
-public class Main implements KeyListener {
-	Frame f;
-	Canvas c;
-	Image img;
-	Label l;
-	public Main() {
-
-		f = new Frame("Canvas Example");
-		l = new Label("GameWall");
-		
-		//Closing Frame Window
-		f.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent we) {
-				System.exit(0);
-			}
-		});
-		 
-		f.add(new myCanvas()); //adding canvas to frame
-		f.setSize(1000, 600);
-		f.setLayout(null);
+public class GameWall implements KeyListener {
+	JFrame f;
+	JLabel PlayerName,labelTimer, displayLabel, labelLog1, labelLog2, labelLog3;
+	int x, x1, x2, x3;
+	int y, y1, y2, y3;
+	int finish;
+	String name;
+	int action;
+	Timer timer;
+	TimerTask task;
+	GameWall(){
+		f = new JFrame();
+		f.setTitle("Game Wall");
+		f.setBounds(100, 100, 1500, 800);
 		f.setVisible(true);
-		f.setTitle("GameWall");
+		f.setLayout(null);
+		f.add(new myCanvas());
 		f.addKeyListener(this);	//add KeyListener to a frame
-		///l.setSize(100, 100);
-		//l.setLocation(100,100);
 
-		//l.setVisible(true);
-	}
-	
-		class myCanvas extends Canvas{
-		String Picture = "D:\\human.png";
+	   name=JOptionPane.showInputDialog(f,"Enter Name", JOptionPane.OK_CANCEL_OPTION);      
+	    PlayerName = new JLabel();
+	    PlayerName.setBounds(100,10,260,100);
+	    PlayerName.setText("Player name: "+name);
+
+		f.add(PlayerName);
+		labelTimer = new JLabel();
+		labelTimer.setBounds(300,10,260,100);
+		f.add(labelTimer);
 		
-		Image img;
-		public myCanvas() {
-			setBackground(Color.GREEN);
-			setBounds(100,10, 800,400);	
-		}
-		
-		public void paint(Graphics g) {
-			int x;
-			int y;
-			// add Image
-		 	Toolkit t=Toolkit.getDefaultToolkit();  //iskvieciau toolkit cass metoda, butina pries darant
-	        img = t.getImage(Picture);  
-	    
-	        g.drawImage(img, 5,100,this);
-	       // img.setSize(1000,1000);
-		}
-		
-	}
-	
-	// controlling girl moves	
-		 public void movingImage(int x, int y) {
-			 
-		 }
-		
-		public void keyPressed(KeyEvent e ) {
-			
-			switch(e.getKeyCode()) {
-			case KeyEvent.VK_DOWN:
-				
-				f.setTitle("Gasascascsd");
-				break; 
-			case KeyEvent.VK_UP:
-				//f.setTitle("Gasascascsd");
-			
-				break;
-			case KeyEvent.VK_LEFT:
-				//f.setTitle("Gasascascsd");
-			
-				break;
-			case KeyEvent.VK_RIGHT:
-				//f.setTitle("Gasascascsd");
-			
-				break;
-			default:
-	            System.out.println("NOT WORKING");
-	            break;
+		timer = new Timer();
+		task = new TimerTask() {
+			int i = 20;
+			public void run() {
+				if (i >0) {
+					System.out.println(i);
+					i--;
+					labelTimer.setText("Time: "+i);
+					if (i ==0) {
+						JOptionPane.showMessageDialog(f,"Game over");
+					}
+				}	
 			}
+		};
+		timer.scheduleAtFixedRate(task, 0, 1000); 
+		// LogsAnimation();
+	}
+
+	
+    
+	class myCanvas extends Canvas{
+
+		public myCanvas() {
+			x = 130;y= 350;x1= 500;y1= 80;x2= 700;y2= 80;x3= 1000;y3= 400;
+			ImageIcon img = new ImageIcon("D:\\human.png");//create an image icon
+			 f.setIconImage(img.getImage());
+			 displayLabel = new JLabel("", img, JLabel.CENTER);
+			 displayLabel.setBounds(x,y,60,100);
+			 f.add(displayLabel);
+			setBackground(Color.green);
+			setBounds(100,80, 1350,650);
+			
+			
+			ImageIcon imgLog = new ImageIcon("D:\\log.jpg");//create an image icon
+			 f.setIconImage(imgLog.getImage());
+			labelLog1 = new JLabel("", imgLog, JLabel.CENTER);
+			labelLog1.setBounds(x1,y1,60,200);
+			f.add(labelLog1);
+			
+			 ImageIcon imgLog2 = new ImageIcon("D:\\log.jpg");//create an image icon
+			 f.setIconImage(imgLog2.getImage());
+			labelLog2 = new JLabel("", imgLog2, JLabel.CENTER);
+			labelLog2.setBounds(x2,y2,60,200);
+			 f.add(labelLog2);
+			 
+			 ImageIcon imgLog3 = new ImageIcon("D:\\log.jpg");//create an image icon
+			 f.setIconImage(imgLog2.getImage());
+			labelLog3 = new JLabel("", imgLog3, JLabel.CENTER);
+			labelLog3.setBounds(x3,y3,60,200);
+			 f.add(labelLog3);
 		}
+
+	}
 	
 
+	 public void LogsAnimation() {
+		
+			for(y1 = 80; y1 <= 500; y1+=1) {
+				if (y1 == 500) {
+					 y1 = 80;
+				 }
+				labelLog1.setBounds(x1,y1,60,200);
+
+				 
+			};
+			
+			for(y2 = 80; y2 <= 500; y2+=1) {
+				if (y2 == 500) {
+					 y2 = 80;
+				 }
+				labelLog2.setBounds(x2,y2,60,200);
+
+				 
+			};
+		}
+		
+	
+	
+	
+	public void keyPressed(KeyEvent e ) {
+		switch(e.getKeyCode()) {
+		case KeyEvent.VK_DOWN:
+			y +=10;
+			 displayLabel.setBounds(x,y,60,100);
+			 break;
+		case KeyEvent.VK_UP:
+			y -=10;
+			 displayLabel.setBounds(x,y,60,100);
+			 break;
+		case KeyEvent.VK_LEFT:
+			x -=10;
+			 displayLabel.setBounds(x,y,60,100);
+			 break;
+		case KeyEvent.VK_RIGHT:
+			x +=10;
+			 displayLabel.setBounds(x,y,60,100);
+			 if (x == 1390) {
+				    JOptionPane.showMessageDialog(f,"YOU ARE THE WINNER");  
+			 }
+			break;
+		default:
+            System.out.println("NOT WORKING");
+            break;
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	public static void main(String[] args) {
-		new Main();
-		
-     
-	;
-		
+		new GameWall();
+
 	}
 
 }
